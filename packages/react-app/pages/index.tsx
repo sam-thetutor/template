@@ -9,18 +9,21 @@ export default function Home() {
         address,
         getUserAddress,
         sendCUSD,
+        balance,
         mintMinipayNFT,
         getNFTs,
         signTransaction,
+        getBalance,
     } = useWeb3();
     const [cUSDLoading, setCUSDLoading] = useState(false);
     const [nftLoading, setNFTLoading] = useState(false);
     const [signingLoading, setSigningLoading] = useState(false);
     const [userOwnedNFTs, setUserOwnedNFTs] = useState<string[]>([]);
     const [tx, setTx] = useState<any>(undefined);
-
     useEffect(() => {
         getUserAddress();
+        getBalance();
+
     }, []);
 
     useEffect(() => {
@@ -85,9 +88,10 @@ export default function Home() {
 
             {address && (
                 <>
-                    <div className="h2 text-center">
+                    <div className="h2 text-center flex flex-col ">
                         Your address:{" "}
                         <span className="font-bold text-sm">{address}</span>
+                        <span>{balance}</span>
                     </div>
                     {tx && (
                         <p className="font-bold mt-4">

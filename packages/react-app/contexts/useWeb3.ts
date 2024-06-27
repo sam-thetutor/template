@@ -5,6 +5,7 @@ import {
     createPublicClient,
     createWalletClient,
     custom,
+    formatEther,
     getContract,
     http,
     parseEther,
@@ -22,13 +23,16 @@ const MINIPAY_NFT_CONTRACT = "0xE8F4699baba6C86DA9729b1B0a1DA1Bd4136eFeF"; // Te
 
 export const useWeb3 = () => {
     const [address, setAddress] = useState<string | null>(null);
+    const [balance,setBalance] = useState<string | null>(null);
 
+
+//get the balance of the user account
     const getUserAddress = async () => {
         if (typeof window !== "undefined" && window.ethereum) {
             let walletClient = createWalletClient({
                 transport: custom(window.ethereum),
                 chain: celoAlfajores,
-            });
+             });
 
             let [address] = await walletClient.getAddresses();
             setAddress(address);
@@ -59,6 +63,29 @@ export const useWeb3 = () => {
 
         return receipt;
     };
+
+    async function getBalance() {
+        let walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+        let [address] = await walletClient.getAddresses();
+
+
+  let bal = await publicClient.getBalance({
+    address: address,
+
+  });
+
+  let balanceInEthers = formatEther(bal);
+
+  setBalance(balanceInEthers);
+
+  return bal;
+}
+
+
+   
 
     const mintMinipayNFT = async () => {
         let walletClient = createWalletClient({
@@ -132,10 +159,12 @@ export const useWeb3 = () => {
 
     return {
         address,
+        balance,
         getUserAddress,
         sendCUSD,
         mintMinipayNFT,
         getNFTs,
         signTransaction,
+        getBalance
     };
 };
